@@ -13,10 +13,18 @@ class HomeView extends GetView<HomeController> {
         title: const Text('HomeView'),
         centerTitle: true,
       ),
-      body: const Center(
-        child: Text(
-          'HomeView is working',
-          style: TextStyle(fontSize: 20),
+      body: Center(
+        child: Obx(() => Text(
+          'Count: ${controller.count}',
+          style: const TextStyle(fontSize: 20),
+        )),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: controller.increment,
+        tooltip: 'Increment count',
+        child: const Icon(
+          Icons.add,
+          semanticLabel: 'Add one',
         ),
       ),
     );
