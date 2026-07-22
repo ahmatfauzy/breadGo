@@ -30,7 +30,7 @@ BreadGo/
 - **Framework**: [Express.js](https://expressjs.com/)
 - **Bahasa Pemrograman**: [TypeScript](https://www.typescriptlang.org/)
 - **ORM**: [Prisma](https://www.prisma.io/)
-- **Database**: [Turso (libSQL)](https://turso.tech/)
+- **Database**: [Turso (libSQL)](https://turso.tech/), SQLite
 
 ---
 

@@ -6,6 +6,7 @@ export interface AuthRequest extends Request {
   user?: {
     userId: string;
     email: string;
+    role: string;
   };
 }
 
@@ -25,6 +26,7 @@ export const protect = (req: AuthRequest, res: Response, next: NextFunction) => 
     req.user = {
       userId: decoded.userId,
       email: decoded.email,
+      role: decoded.role,
     };
     next();
   } catch (error) {

@@ -5,8 +5,8 @@ import { prisma } from '../utils/prisma';
 import { config } from '../config/index';
 import { AuthRequest } from '../middleware/authMiddleware';
 
-const generateToken = (userId: string, email: string) => {
-  return jwt.sign({ userId, email }, config.jwtSecret, {
+const generateToken = (userId: string, email: string, role: string) => {
+  return jwt.sign({ userId, email, role }, config.jwtSecret, {
     expiresIn: config.jwtExpiresIn,
   });
 };
@@ -37,7 +37,7 @@ export const register = async (req: Request, res: Response): Promise<void> => {
       },
     });
 
-    const token = generateToken(user.id, user.email);
+    const token = generateToken(user.id, user.email, user.role);
 
     res.status(201).json({
       success: true,
@@ -76,7 +76,7 @@ export const login = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
-    const token = generateToken(user.id, user.email);
+    const token = generateToken(user.id, user.email, user.role);
 
     res.status(200).json({
       success: true,
@@ -108,6 +108,7 @@ export const getMe = async (req: AuthRequest, res: Response): Promise<void> => {
         id: true,
         name: true,
         email: true,
+        role: true,
         createdAt: true,
       },
     });
