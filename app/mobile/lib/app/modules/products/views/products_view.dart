@@ -14,6 +14,7 @@ class ProductsView extends GetView<ProductsController> {
         title: const Text('Katalog Roti'),
         actions: [
           IconButton(
+            tooltip: 'Cari Produk',
             icon: const Icon(Icons.search),
             onPressed: () => _showSearch(context),
           ),
