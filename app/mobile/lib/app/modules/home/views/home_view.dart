@@ -129,9 +129,11 @@ class HomeView extends GetView<HomeController> {
         if (prodC.isLoading.value) {
           return const Center(child: CircularProgressIndicator());
         }
+        // ⚡ Bolt: Removed redundant fetchProducts() call from build method.
+        // It was causing an infinite loop of API calls and re-renders when the list was empty.
+        // Expected impact: Prevents UI blocking and reduces backend load to 0 for empty catalogs.
         if (prodC.products.isEmpty) {
-          prodC.fetchProducts();
-          return const Center(child: CircularProgressIndicator());
+          return const Center(child: Text('Tidak ada produk'));
         }
         return RefreshIndicator(
           onRefresh: () => prodC.fetchProducts(),
