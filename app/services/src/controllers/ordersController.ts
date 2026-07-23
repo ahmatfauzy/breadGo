@@ -16,6 +16,15 @@ export const createOrder = async (req: AuthRequest, res: Response): Promise<void
       return;
     }
 
+    // Security Fix: Validate quantities to prevent negative amounts or non-integer values
+    for (const item of items) {
+      const qty = Number(item.quantity);
+      if (!Number.isInteger(qty) || qty <= 0) {
+        res.status(400).json({ success: false, message: "Item quantity must be a positive integer" });
+        return;
+      }
+    }
+
     const productIds = items.map((i: any) => i.productId);
     const products = await prisma.product.findMany({
       where: { id: { in: productIds }, isActive: true },
