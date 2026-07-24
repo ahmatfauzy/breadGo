@@ -19,6 +19,7 @@ class HomeView extends GetView<HomeController> {
         actions: [
           IconButton(
             icon: const Icon(Icons.shopping_bag),
+            tooltip: 'Riwayat Pesanan',
             onPressed: () {
               if (authC.isLoggedIn.value) {
                 Get.toNamed('/history');
@@ -30,6 +31,7 @@ class HomeView extends GetView<HomeController> {
           Obx(() => authC.isAdmin.value
               ? IconButton(
                   icon: const Icon(Icons.admin_panel_settings),
+                  tooltip: 'Admin Dashboard',
                   onPressed: () => Get.toNamed('/admin/dashboard'),
                 )
               : const SizedBox.shrink()),
