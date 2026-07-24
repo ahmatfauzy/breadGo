@@ -16,7 +16,15 @@ export const createOrder = async (req: AuthRequest, res: Response): Promise<void
       return;
     }
 
-    const productIds = items.map((i: any) => i.productId);
+    for (const item of items) {
+      const qty = Number(item.quantity);
+      if (!Number.isInteger(qty) || qty <= 0) {
+        res.status(400).json({ success: false, message: "Invalid quantity for item. Quantity must be a positive integer." });
+        return;
+      }
+    }
+
+    const productIds = Array.from(new Set(items.map((i: any) => i.productId))) as string[];
     const products = await prisma.product.findMany({
       where: { id: { in: productIds }, isActive: true },
     });
