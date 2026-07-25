@@ -130,7 +130,9 @@ class HomeView extends GetView<HomeController> {
           return const Center(child: CircularProgressIndicator());
         }
         if (prodC.products.isEmpty) {
-          prodC.fetchProducts();
+          // ⚡ Bolt: Removed prodC.fetchProducts() from inside Obx to prevent infinite
+          // re-render loops and excessive API calls when the product list is empty.
+          // The fetch is correctly handled in the controller's onInit.
           return const Center(child: CircularProgressIndicator());
         }
         return RefreshIndicator(
