@@ -27,8 +27,9 @@ export const getProducts = async (req: Request, res: Response): Promise<void> =>
 
 export const getProductById = async (req: Request, res: Response): Promise<void> => {
   try {
+    const id = req.params.id as string;
     const product = await prisma.product.findUnique({
-      where: { id: req.params.id },
+      where: { id },
     });
 
     if (!product || !product.isActive) {
@@ -71,9 +72,10 @@ export const createProduct = async (req: Request, res: Response): Promise<void> 
 
 export const updateProduct = async (req: Request, res: Response): Promise<void> => {
   try {
+    const id = req.params.id as string;
     const { name, description, price, imageUrl, category, isActive } = req.body;
 
-    const existing = await prisma.product.findUnique({ where: { id: req.params.id } });
+    const existing = await prisma.product.findUnique({ where: { id } });
     if (!existing) {
       res.status(404).json({ success: false, message: "Product not found" });
       return;
@@ -88,7 +90,7 @@ export const updateProduct = async (req: Request, res: Response): Promise<void> 
     if (isActive !== undefined) data.isActive = Boolean(isActive);
 
     const product = await prisma.product.update({
-      where: { id: req.params.id },
+      where: { id },
       data,
     });
 
@@ -101,14 +103,15 @@ export const updateProduct = async (req: Request, res: Response): Promise<void> 
 
 export const deleteProduct = async (req: Request, res: Response): Promise<void> => {
   try {
-    const existing = await prisma.product.findUnique({ where: { id: req.params.id } });
+    const id = req.params.id as string;
+    const existing = await prisma.product.findUnique({ where: { id } });
     if (!existing) {
       res.status(404).json({ success: false, message: "Product not found" });
       return;
     }
 
     await prisma.product.update({
-      where: { id: req.params.id },
+      where: { id },
       data: { isActive: false },
     });
 

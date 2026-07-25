@@ -15,6 +15,7 @@ import '../modules/orders/views/order_detail_view.dart';
 import '../modules/admin/bindings/admin_binding.dart';
 import '../modules/admin/views/admin_dashboard_view.dart';
 import '../modules/admin/views/admin_order_detail_view.dart';
+import '../modules/admin/views/admin_add_product_view.dart';
 
 part 'app_routes.dart';
 
@@ -72,6 +73,11 @@ class AppPages {
     GetPage(
       name: _Paths.ADMIN_ORDER_DETAIL,
       page: () => const AdminOrderDetailView(),
+      binding: AdminBinding(),
+    ),
+    GetPage(
+      name: _Paths.ADMIN_ADD_PRODUCT,
+      page: () => const AdminAddProductView(),
       binding: AdminBinding(),
     ),
   ];

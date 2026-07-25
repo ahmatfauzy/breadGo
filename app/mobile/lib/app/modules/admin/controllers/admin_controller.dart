@@ -80,4 +80,34 @@ class AdminController extends GetxController {
     selectedStatus.value = status;
     fetchOrders(status: status.isEmpty ? null : status);
   }
+
+  Future<String?> addProduct({
+    required String name,
+    required String description,
+    required double price,
+    required String imageUrl,
+    required String category,
+  }) async {
+    isLoading.value = true;
+    try {
+      final req = {
+        'name': name,
+        'description': description,
+        'price': price,
+        'imageUrl': imageUrl,
+        'category': category,
+      };
+      final res = await _api.post(
+        '/products',
+        auth: true,
+        body: req,
+      );
+      if (res.success) {
+        return null;
+      }
+      return res.message ?? 'Gagal menambahkan produk';
+    } finally {
+      isLoading.value = false;
+    }
+  }
 }

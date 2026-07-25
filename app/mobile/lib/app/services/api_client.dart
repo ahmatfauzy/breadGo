@@ -1,15 +1,21 @@
 import 'dart:convert';
+import 'dart:io' show Platform;
 
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/api_response.dart';
 
 class ApiClient {
-  static const String baseUrl = String.fromEnvironment(
-    'API_BASE_URL',
-    defaultValue: 'http://10.0.2.2:5000/api/v1',
-  );
+  static String get baseUrl {
+    const envUrl = String.fromEnvironment('API_BASE_URL');
+    if (envUrl.isNotEmpty) return envUrl;
+    if (!kIsWeb && Platform.isAndroid) {
+      return 'http://10.0.2.2:5000/api/v1';
+    }
+    return 'http://localhost:5000/api/v1';
+  }
 
   static final ApiClient _instance = ApiClient._();
   factory ApiClient() => _instance;

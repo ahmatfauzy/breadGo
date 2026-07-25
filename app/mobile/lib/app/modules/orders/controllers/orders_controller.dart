@@ -90,7 +90,7 @@ class OrdersController extends GetxController {
   Future<Position> _getCurrentPosition() async {
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) {
-      throw Exception('GPS tidak aktif. Nyalakan GPS terlebih dahulu.');
+      throw Exception('GPS tidak aktif. Aktifkan lokasi pada perangkat Anda.');
     }
 
     LocationPermission permission = await Geolocator.checkPermission();
@@ -104,10 +104,20 @@ class OrdersController extends GetxController {
       throw Exception('Izin lokasi ditolak permanen. Buka pengaturan.');
     }
 
-    return await Geolocator.getCurrentPosition(
-      locationSettings: const LocationSettings(
-        accuracy: LocationAccuracy.high,
-      ),
-    );
+    try {
+      return await Geolocator.getCurrentPosition(
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.high,
+          timeLimit: Duration(seconds: 12),
+        ),
+      );
+    } catch (_) {
+      return await Geolocator.getCurrentPosition(
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.low,
+          timeLimit: Duration(seconds: 8),
+        ),
+      );
+    }
   }
 }

@@ -7,7 +7,7 @@ import { AuthRequest } from '../middleware/authMiddleware';
 
 const generateToken = (userId: string, email: string, role: string) => {
   return jwt.sign({ userId, email, role }, config.jwtSecret, {
-    expiresIn: config.jwtExpiresIn,
+    expiresIn: config.jwtExpiresIn as any,
   });
 };
 

@@ -142,8 +142,9 @@ export const getOrders = async (req: AuthRequest, res: Response): Promise<void> 
 
 export const getOrderById = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
+    const id = req.params.id as string;
     const order = await prisma.order.findUnique({
-      where: { id: req.params.id },
+      where: { id },
       include: {
         items: {
           include: {
@@ -174,7 +175,7 @@ export const getOrderById = async (req: AuthRequest, res: Response): Promise<voi
       totalAmount: order.totalAmount,
       status: order.status,
       createdAt: order.createdAt.toISOString(),
-      items: order.items.map((item) => ({
+      items: order.items.map((item: any) => ({
         id: item.id,
         productId: item.productId,
         productName: item.product.name,
@@ -192,6 +193,7 @@ export const getOrderById = async (req: AuthRequest, res: Response): Promise<voi
 
 export const updateOrderStatus = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
+    const id = req.params.id as string;
     const { status } = req.body;
     const validStatuses = ["pending", "confirmed", "delivered", "cancelled"];
 
@@ -200,14 +202,14 @@ export const updateOrderStatus = async (req: AuthRequest, res: Response): Promis
       return;
     }
 
-    const existing = await prisma.order.findUnique({ where: { id: req.params.id } });
+    const existing = await prisma.order.findUnique({ where: { id } });
     if (!existing) {
       res.status(404).json({ success: false, message: "Order not found" });
       return;
     }
 
     const order = await prisma.order.update({
-      where: { id: req.params.id },
+      where: { id },
       data: { status },
       include: {
         items: {
@@ -229,7 +231,7 @@ export const updateOrderStatus = async (req: AuthRequest, res: Response): Promis
       totalAmount: order.totalAmount,
       status: order.status,
       createdAt: order.createdAt.toISOString(),
-      items: order.items.map((item) => ({
+      items: order.items.map((item: any) => ({
         id: item.id,
         productId: item.productId,
         productName: item.product.name,

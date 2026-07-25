@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 
 import '../../../models/product_models.dart';
 import '../controllers/products_controller.dart';
+import '../../../theme/app_theme.dart';
 
 class ProductsView extends GetView<ProductsController> {
   const ProductsView({super.key});
@@ -10,17 +11,10 @@ class ProductsView extends GetView<ProductsController> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Katalog Roti'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.search),
-            onPressed: () => _showSearch(context),
-          ),
-        ],
-      ),
+      backgroundColor: AppColors.background,
       body: Column(
         children: [
+          _buildHeader(context),
           _buildCategoryFilter(),
           Expanded(child: _buildProductGrid()),
         ],
@@ -28,114 +22,331 @@ class ProductsView extends GetView<ProductsController> {
     );
   }
 
-  void _showSearch(BuildContext context) {
-    final searchC = TextEditingController();
-    showDialog(
-      context: context,
-      builder: (_) => AlertDialog(
-        title: const Text('Cari Produk'),
-        content: TextField(
-          controller: searchC,
-          decoration: const InputDecoration(hintText: 'Nama produk...'),
-          autofocus: true,
-          onSubmitted: (v) {
-            controller.search(v);
-            Get.back();
-          },
+  // ═══════════════════════════════════════════
+  // HEADER  (brown + search)
+  // ═══════════════════════════════════════════
+  Widget _buildHeader(BuildContext context) {
+    return Container(
+      color: AppColors.primary,
+      child: SafeArea(
+        bottom: false,
+        child: Column(
+          children: [
+            // Title row
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+              child: Row(
+                children: [
+                  GestureDetector(
+                    onTap: () => Get.back(),
+                    child: Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.15),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: const Icon(Icons.arrow_back_ios_new,
+                          color: Colors.white, size: 18),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  const Text(
+                    'Katalog Roti',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: -0.3,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            // Search bar
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+              child: _buildSearchField(),
+            ),
+            // Curve transition ke background
+            Container(
+              height: 22,
+              decoration: const BoxDecoration(
+                color: AppColors.background,
+                borderRadius:
+                    BorderRadius.vertical(top: Radius.circular(22)),
+              ),
+            ),
+          ],
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Get.back(),
-            child: const Text('Batal'),
+      ),
+    );
+  }
+
+  Widget _buildSearchField() {
+    return Container(
+      height: 48,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(14),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.08),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
           ),
-          TextButton(
-            onPressed: () {
-              controller.search(searchC.text);
-              Get.back();
-            },
-            child: const Text('Cari'),
+        ],
+      ),
+      child: TextField(
+        decoration: const InputDecoration(
+          hintText: 'Cari produk...',
+          prefixIcon:
+              Icon(Icons.search, color: AppColors.textHint, size: 20),
+          border: InputBorder.none,
+          enabledBorder: InputBorder.none,
+          focusedBorder: InputBorder.none,
+          contentPadding: EdgeInsets.symmetric(vertical: 14),
+        ),
+        onSubmitted: controller.search,
+      ),
+    );
+  }
+
+  // ═══════════════════════════════════════════
+  // CATEGORY FILTER
+  // ═══════════════════════════════════════════
+  Widget _buildCategoryFilter() {
+    final categories = ['', 'bread', 'cake', 'pastry'];
+    final labels = ['Semua', 'Roti 🍞', 'Kue 🎂', 'Pastry 🥐'];
+
+    return Obx(() => Container(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+          color: AppColors.background,
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: List.generate(categories.length, (i) {
+                final selected =
+                    controller.selectedCategory.value == categories[i];
+                return Padding(
+                  padding: const EdgeInsets.only(right: 10),
+                  child: GestureDetector(
+                    onTap: () =>
+                        controller.filterByCategory(categories[i]),
+                    child: AnimatedContainer(
+                      duration: const Duration(milliseconds: 200),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 18, vertical: 9),
+                      decoration: BoxDecoration(
+                        color: selected
+                            ? AppColors.primary
+                            : Colors.white,
+                        borderRadius: BorderRadius.circular(50),
+                        border: Border.all(
+                          color: selected
+                              ? AppColors.primary
+                              : Colors.grey.shade200,
+                        ),
+                        boxShadow: selected
+                            ? [
+                                BoxShadow(
+                                  color: AppColors.primary
+                                      .withValues(alpha: 0.22),
+                                  blurRadius: 8,
+                                  offset: const Offset(0, 3),
+                                ),
+                              ]
+                            : [],
+                      ),
+                      child: Text(
+                        labels[i],
+                        style: TextStyle(
+                          color: selected
+                              ? Colors.white
+                              : AppColors.textSecondary,
+                          fontWeight: selected
+                              ? FontWeight.w700
+                              : FontWeight.w500,
+                          fontSize: 13,
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+              }),
+            ),
+          ),
+        ));
+  }
+
+  // ═══════════════════════════════════════════
+  // PRODUCT GRID
+  // ═══════════════════════════════════════════
+  Widget _buildProductGrid() {
+    return Obx(() {
+      if (controller.isLoading.value) {
+        return const Center(
+          child: CircularProgressIndicator(color: AppColors.primary),
+        );
+      }
+      if (controller.products.isEmpty) {
+        return _buildEmptyState();
+      }
+      return RefreshIndicator(
+        onRefresh: () => controller.fetchProducts(),
+        color: AppColors.primary,
+        child: GridView.builder(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+          gridDelegate:
+              const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            childAspectRatio: 0.74,
+            crossAxisSpacing: 14,
+            mainAxisSpacing: 14,
+          ),
+          itemCount: controller.products.length,
+          itemBuilder: (_, i) =>
+              _buildProductCard(controller.products[i]),
+        ),
+      );
+    });
+  }
+
+  Widget _buildEmptyState() {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            width: 90,
+            height: 90,
+            decoration: const BoxDecoration(
+              color: AppColors.primarySurface,
+              shape: BoxShape.circle,
+            ),
+            child: const Icon(Icons.bakery_dining,
+                size: 48, color: AppColors.primaryLight),
+          ),
+          const SizedBox(height: 16),
+          const Text(
+            'Tidak ada produk',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              color: AppColors.textPrimary,
+            ),
+          ),
+          const SizedBox(height: 6),
+          const Text(
+            'Coba kata kunci lain',
+            style: TextStyle(
+              fontSize: 13,
+              color: AppColors.textSecondary,
+            ),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildCategoryFilter() {
-    final categories = ['', 'bread', 'cake'];
-    final labels = ['Semua', 'Roti', 'Kue'];
-    return Obx(() => Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-          child: Row(
-            children: List.generate(categories.length, (i) {
-              final selected = controller.selectedCategory.value == categories[i];
-              return Padding(
-                padding: const EdgeInsets.only(right: 8),
-                child: FilterChip(
-                  label: Text(labels[i]),
-                  selected: selected,
-                  onSelected: (_) => controller.filterByCategory(categories[i]),
-                ),
-              );
-            }),
-          ),
-        ));
-  }
-
-  Widget _buildProductGrid() {
-    return Obx(() {
-      if (controller.isLoading.value) {
-        return const Center(child: CircularProgressIndicator());
-      }
-      if (controller.products.isEmpty) {
-        return const Center(child: Text('Tidak ada produk'));
-      }
-      return GridView.builder(
-        padding: const EdgeInsets.all(8),
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          childAspectRatio: 0.7,
-          crossAxisSpacing: 8,
-          mainAxisSpacing: 8,
-        ),
-        itemCount: controller.products.length,
-        itemBuilder: (context, index) {
-          final product = controller.products[index];
-          return _buildProductCard(product);
-        },
-      );
-    });
-  }
-
+  // ═══════════════════════════════════════════
+  // PRODUCT CARD
+  // ═══════════════════════════════════════════
   Widget _buildProductCard(Product product) {
     return GestureDetector(
       onTap: () => Get.toNamed('/products/${product.id}'),
-      child: Card(
-        clipBehavior: Clip.antiAlias,
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.06),
+              blurRadius: 12,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Gambar produk
             Expanded(
-              child: Container(
-                color: Colors.brown.shade100,
-                child: Center(
-                  child: Icon(Icons.bakery_dining,
-                      size: 48, color: Colors.brown.shade700),
-                ),
+              child: Stack(
+                children: [
+                  ClipRRect(
+                    borderRadius: const BorderRadius.vertical(
+                        top: Radius.circular(20)),
+                    child: product.imageUrl.isNotEmpty
+                        ? Image.network(
+                            product.imageUrl,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                            errorBuilder: (ctx, err, stack) =>
+                                _placeholder(),
+                          )
+                        : _placeholder(),
+                  ),
+                  // Category tag
+                  Positioned(
+                    top: 10,
+                    left: 10,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 4),
+                      decoration: BoxDecoration(
+                        color:
+                            AppColors.primary.withValues(alpha: 0.88),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(
+                        _categoryLabel(product.category),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 9,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
+
+            // Info
             Padding(
-              padding: const EdgeInsets.all(8),
+              padding: const EdgeInsets.fromLTRB(12, 10, 12, 12),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(product.name,
-                      style: const TextStyle(fontWeight: FontWeight.bold),
-                      maxLines: 1, overflow: TextOverflow.ellipsis),
-                  const SizedBox(height: 4),
-                  Text('Rp ${product.price.toInt()}',
-                      style: TextStyle(
-                          color: Colors.green.shade700,
-                          fontWeight: FontWeight.w600)),
+                  Text(
+                    product.name,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w700,
+                      fontSize: 13,
+                      color: AppColors.textPrimary,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 3),
+                  Text(
+                    product.description,
+                    style: const TextStyle(
+                      color: AppColors.textHint,
+                      fontSize: 11,
+                    ),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Rp ${_formatPrice(product.price.toInt())}',
+                    style: const TextStyle(
+                      color: AppColors.primary,
+                      fontWeight: FontWeight.w800,
+                      fontSize: 13,
+                    ),
+                  ),
                 ],
               ),
             ),
@@ -143,5 +354,36 @@ class ProductsView extends GetView<ProductsController> {
         ),
       ),
     );
+  }
+
+  Widget _placeholder() {
+    return Container(
+      width: double.infinity,
+      color: AppColors.primarySurface,
+      child: const Center(
+        child: Icon(Icons.bakery_dining,
+            size: 52, color: AppColors.primaryLight),
+      ),
+    );
+  }
+
+  String _categoryLabel(String cat) {
+    switch (cat) {
+      case 'bread':
+        return 'Roti';
+      case 'cake':
+        return 'Kue';
+      case 'pastry':
+        return 'Pastry';
+      default:
+        return 'Lainnya';
+    }
+  }
+
+  String _formatPrice(int price) {
+    return price.toString().replaceAllMapped(
+          RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
+          (m) => '${m[1]}.',
+        );
   }
 }

@@ -56,8 +56,9 @@ export const getAllOrders = async (req: Request, res: Response): Promise<void> =
 
 export const getOrderDetailAdmin = async (req: Request, res: Response): Promise<void> => {
   try {
+    const id = req.params.id as string;
     const order = await prisma.order.findUnique({
-      where: { id: req.params.id },
+      where: { id },
       include: orderInclude,
     });
 

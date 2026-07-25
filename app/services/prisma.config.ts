@@ -9,6 +9,6 @@ export default defineConfig({
     path: "prisma/migrations",
   },
   datasource: {
-    url: "file:./dev.db",
+    url: process.env.DATABASE_URL || "postgres://postgres:123@localhost:5432/breadgo",
   },
 });
