@@ -1,0 +1,3 @@
+## 2024-07-25 - Missing Semantics on Icon-Only Controls
+**Learning:** Found a recurring pattern in the Flutter app where icon-only controls (`IconButton` and custom `GestureDetector` buttons) lack `tooltip` properties. In Flutter, `tooltip` is critical not just for visual hover states on web/desktop, but because it automatically acts as the semantic label for screen readers (VoiceOver/TalkBack).
+**Action:** Always verify that every `IconButton` or custom icon-only button uses the `tooltip` property or is explicitly wrapped in a `Tooltip` or `Semantics` widget to ensure accessibility across all platforms.

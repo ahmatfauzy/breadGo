@@ -71,23 +71,26 @@ class ProductDetailView extends GetView<ProductsController> {
               elevation: 0,
               leading: Padding(
                 padding: const EdgeInsets.all(8),
-                child: GestureDetector(
-                  onTap: () => Get.back(),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.1),
-                          blurRadius: 8,
-                        ),
-                      ],
-                    ),
-                    child: const Icon(
-                      Icons.arrow_back_ios_new,
-                      color: AppColors.primary,
-                      size: 18,
+                child: Tooltip(
+                  message: 'Kembali',
+                  child: GestureDetector(
+                    onTap: () => Get.back(),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withValues(alpha: 0.1),
+                            blurRadius: 8,
+                          ),
+                        ],
+                      ),
+                      child: const Icon(
+                        Icons.arrow_back_ios_new,
+                        color: AppColors.primary,
+                        size: 18,
+                      ),
                     ),
                   ),
                 ),
@@ -150,6 +153,7 @@ class ProductDetailView extends GetView<ProductsController> {
                           child: Row(
                             children: [
                               IconButton(
+                                tooltip: 'Kurangi jumlah',
                                 constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
                                 padding: EdgeInsets.zero,
                                 icon: const Icon(Icons.remove, size: 18, color: AppColors.primary),
@@ -169,6 +173,7 @@ class ProductDetailView extends GetView<ProductsController> {
                                     ),
                                   )),
                               IconButton(
+                                tooltip: 'Tambah jumlah',
                                 constraints: const BoxConstraints(minWidth: 36, minHeight: 36),
                                 padding: EdgeInsets.zero,
                                 icon: const Icon(Icons.add, size: 18, color: AppColors.primary),
