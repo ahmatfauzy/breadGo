@@ -11,12 +11,30 @@ const generateToken = (userId: string, email: string, role: string) => {
   });
 };
 
+// Simple email regex for format validation
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 export const register = async (req: Request, res: Response): Promise<void> => {
   try {
     const { name, email, password } = req.body;
 
     if (!name || !email || !password) {
       res.status(400).json({ success: false, message: 'Please provide all required fields' });
+      return;
+    }
+
+    if (typeof name !== 'string' || name.length < 2 || name.length > 50) {
+      res.status(400).json({ success: false, message: 'Name must be between 2 and 50 characters' });
+      return;
+    }
+
+    if (typeof email !== 'string' || email.length > 100 || !emailRegex.test(email)) {
+      res.status(400).json({ success: false, message: 'Invalid email format' });
+      return;
+    }
+
+    if (typeof password !== 'string' || password.length < 6 || password.length > 100) {
+      res.status(400).json({ success: false, message: 'Password must be between 6 and 100 characters' });
       return;
     }
 
@@ -61,6 +79,16 @@ export const login = async (req: Request, res: Response): Promise<void> => {
 
     if (!email || !password) {
       res.status(400).json({ success: false, message: 'Please provide email and password' });
+      return;
+    }
+
+    if (typeof email !== 'string' || email.length > 100 || !emailRegex.test(email)) {
+      res.status(400).json({ success: false, message: 'Invalid email format' });
+      return;
+    }
+
+    if (typeof password !== 'string' || password.length > 100) {
+      res.status(400).json({ success: false, message: 'Invalid credentials' });
       return;
     }
 
