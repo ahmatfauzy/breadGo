@@ -30,13 +30,13 @@ export const createOrder = async (req: AuthRequest, res: Response): Promise<void
     });
 
     if (products.length !== productIds.length) {
-      const found = new Set(products.map((p) => p.id));
+      const found = new Set(products.map((p: any) => p.id));
       const missing = productIds.find((id: string) => !found.has(id));
       res.status(404).json({ success: false, message: `Product not found: ${missing}` });
       return;
     }
 
-    const productMap = new Map(products.map((p) => [p.id, p]));
+    const productMap = new Map(products.map((p: any) => [p.id, p]));
 
     let totalAmount = 0;
     const orderItems = items.map((item: any) => {
@@ -83,7 +83,7 @@ export const createOrder = async (req: AuthRequest, res: Response): Promise<void
       totalAmount: order.totalAmount,
       status: order.status,
       createdAt: order.createdAt.toISOString(),
-      items: order.items.map((item) => ({
+      items: order.items.map((item: any) => ({
         id: item.id,
         productId: item.productId,
         productName: item.product.name,
@@ -113,7 +113,7 @@ export const getOrders = async (req: AuthRequest, res: Response): Promise<void> 
       orderBy: { createdAt: "desc" },
     });
 
-    const data = orders.map((order) => ({
+    const data = orders.map((order: any) => ({
       id: order.id,
       userId: order.userId,
       customerName: order.customerName,
@@ -124,7 +124,7 @@ export const getOrders = async (req: AuthRequest, res: Response): Promise<void> 
       totalAmount: order.totalAmount,
       status: order.status,
       createdAt: order.createdAt.toISOString(),
-      items: order.items.map((item) => ({
+      items: order.items.map((item: any) => ({
         id: item.id,
         productId: item.productId,
         productName: item.product.name,

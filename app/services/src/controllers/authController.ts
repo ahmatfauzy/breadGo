@@ -20,6 +20,17 @@ export const register = async (req: Request, res: Response): Promise<void> => {
       return;
     }
 
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      res.status(400).json({ success: false, message: 'Invalid email format' });
+      return;
+    }
+
+    if (password.length < 6) {
+      res.status(400).json({ success: false, message: 'Password must be at least 6 characters long' });
+      return;
+    }
+
     const userExists = await prisma.user.findUnique({ where: { email } });
     if (userExists) {
       res.status(400).json({ success: false, message: 'User already exists' });
