@@ -149,6 +149,9 @@ class LoginView extends GetView<AuthController> {
                         prefixIcon: const Icon(Icons.lock_outline,
                             color: AppColors.textHint, size: 20),
                         suffixIcon: IconButton(
+                          tooltip: obscure.value
+                              ? 'Tampilkan password'
+                              : 'Sembunyikan password',
                           icon: Icon(
                             obscure.value
                                 ? Icons.visibility_off_outlined
