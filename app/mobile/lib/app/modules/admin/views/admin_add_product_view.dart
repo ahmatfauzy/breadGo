@@ -171,8 +171,9 @@ class _AdminAddProductViewState extends State<AdminAddProductView> {
                     value: categoryC.value,
                     decoration: const InputDecoration(labelText: 'Kategori'),
                     items: const [
-                      DropdownMenuItem(value: 'bread', child: Text('Bread')),
-                      DropdownMenuItem(value: 'cake', child: Text('Cake')),
+                      DropdownMenuItem(value: 'bread', child: Text('Roti 🍞')),
+                      DropdownMenuItem(value: 'cake', child: Text('Kue 🎂')),
+                      DropdownMenuItem(value: 'pastry', child: Text('Pastry 🥐')),
                     ],
                     onChanged: (val) {
                       if (val != null) categoryC.value = val;

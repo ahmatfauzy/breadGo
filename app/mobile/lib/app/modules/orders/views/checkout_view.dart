@@ -5,9 +5,9 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../auth/controllers/auth_controller.dart';
-import '../../admin/controllers/admin_controller.dart';
 import '../../../models/product_models.dart';
 import '../../../models/order_models.dart';
+import '../../../services/api_client.dart';
 import '../../../theme/app_theme.dart';
 import '../../../utils/helpers.dart';
 import '../controllers/orders_controller.dart';
@@ -65,10 +65,12 @@ class _CheckoutViewState extends State<CheckoutView> {
     if (_paymentBytes == null) return null;
     setState(() => _isUploadingPayment = true);
     try {
-      final url = await Get.find<AdminController>()
-          .uploadImageBytes(_paymentBytes!, _paymentFileName ?? 'payment.jpg');
-      if (url != null) _paymentProofUrl = url;
-      return url;
+      final res = await ApiClient().uploadFile('/upload', bytes: _paymentBytes!, filename: _paymentFileName ?? 'payment.jpg', auth: true);
+      if (res.success && res.data != null) {
+        _paymentProofUrl = res.data!['url'] as String?;
+        return _paymentProofUrl;
+      }
+      return null;
     } finally {
       setState(() => _isUploadingPayment = false);
     }
