@@ -5,3 +5,5 @@ logs/
 .DS_Store
 
 /src/generated/prisma
+
+dist/
