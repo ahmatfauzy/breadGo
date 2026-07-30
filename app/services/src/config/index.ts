@@ -13,4 +13,6 @@ export const config = {
   // ponytail: ganti dengan lazy throw getter saat production sudah punya env var di Vercel dashboard
   jwtSecret: process.env.JWT_SECRET || 'dev-secret-fallback',
   jwtExpiresIn: '1d',
+  resendApiKey: process.env.RESEND_API_KEY || '',
+  emailFrom: process.env.EMAIL_FROM || '',
 };

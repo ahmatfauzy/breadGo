@@ -22,6 +22,7 @@ const formatOrder = (order: any) => ({
   longitude: order.longitude,
   totalAmount: order.totalAmount,
   status: order.status,
+  paymentProof: order.paymentProof,
   createdAt: order.createdAt.toISOString(),
   items: order.items.map((item: any) => ({
     id: item.id,
@@ -50,6 +51,19 @@ export const getAllOrders = async (req: Request, res: Response): Promise<void> =
     res.status(200).json({ success: true, data: orders.map(formatOrder) });
   } catch (error) {
     console.error("getAllOrders Error:", error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+export const getAllProducts = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const products = await prisma.product.findMany({
+      orderBy: { createdAt: "desc" },
+    });
+
+    res.status(200).json({ success: true, data: products });
+  } catch (error) {
+    console.error("getAllProducts Error:", error);
     res.status(500).json({ success: false, message: "Server error" });
   }
 };

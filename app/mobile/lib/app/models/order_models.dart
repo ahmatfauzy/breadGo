@@ -17,6 +17,7 @@ class CreateOrderRequest {
   final double latitude;
   final double longitude;
   final List<OrderItemRequest> items;
+  final String? paymentProof;
 
   CreateOrderRequest({
     required this.customerName,
@@ -25,6 +26,7 @@ class CreateOrderRequest {
     required this.latitude,
     required this.longitude,
     required this.items,
+    this.paymentProof,
   });
 
   Map<String, dynamic> toJson() => {
@@ -34,6 +36,7 @@ class CreateOrderRequest {
         'latitude': latitude,
         'longitude': longitude,
         'items': items.map((i) => i.toJson()).toList(),
+        if (paymentProof != null) 'paymentProof': paymentProof,
       };
 }
 
@@ -72,6 +75,7 @@ class OrderResponse {
   final double longitude;
   final double totalAmount;
   final String status;
+  final String? paymentProof;
   final String createdAt;
   final List<OrderItemResponse> items;
 
@@ -85,6 +89,7 @@ class OrderResponse {
     required this.longitude,
     required this.totalAmount,
     required this.status,
+    this.paymentProof,
     required this.createdAt,
     required this.items,
   });
@@ -99,6 +104,7 @@ class OrderResponse {
         longitude: (json['longitude'] as num).toDouble(),
         totalAmount: (json['totalAmount'] as num).toDouble(),
         status: json['status'],
+        paymentProof: json['paymentProof'] as String?,
         createdAt: json['createdAt'],
         items: (json['items'] as List)
             .map((i) => OrderItemResponse.fromJson(i))
@@ -118,6 +124,7 @@ class AdminOrderResponse {
   final double longitude;
   final double totalAmount;
   final String status;
+  final String? paymentProof;
   final String createdAt;
   final List<OrderItemResponse> items;
 
@@ -133,6 +140,7 @@ class AdminOrderResponse {
     required this.longitude,
     required this.totalAmount,
     required this.status,
+    this.paymentProof,
     required this.createdAt,
     required this.items,
   });
@@ -150,6 +158,7 @@ class AdminOrderResponse {
         longitude: (json['longitude'] as num).toDouble(),
         totalAmount: (json['totalAmount'] as num).toDouble(),
         status: json['status'],
+        paymentProof: json['paymentProof'] as String?,
         createdAt: json['createdAt'],
         items: (json['items'] as List)
             .map((i) => OrderItemResponse.fromJson(i))

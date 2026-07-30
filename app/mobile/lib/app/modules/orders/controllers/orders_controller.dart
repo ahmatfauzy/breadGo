@@ -59,6 +59,7 @@ class OrdersController extends GetxController {
     required String customerPhone,
     required String customerAddress,
     required List<OrderItemRequest> items,
+    String? paymentProof,
   }) async {
     isSubmitting.value = true;
     try {
@@ -70,6 +71,7 @@ class OrdersController extends GetxController {
         latitude: position.latitude,
         longitude: position.longitude,
         items: items,
+        paymentProof: paymentProof,
       );
       final res = await _api.post(
         '/orders',

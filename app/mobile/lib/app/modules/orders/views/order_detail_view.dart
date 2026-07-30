@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../theme/app_theme.dart';
+import '../../../utils/helpers.dart';
 import '../controllers/orders_controller.dart';
 
 class OrderDetailView extends GetView<OrdersController> {
@@ -25,20 +27,16 @@ class OrderDetailView extends GetView<OrdersController> {
           return const Center(child: Text('Pesanan tidak ditemukan'));
         }
 
-        final statusColor = _statusColor(order.status);
+        final color = statusColor(order.status);
 
         return SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(20),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              _buildStatusHeader(order, statusColor),
+              _buildStatusHeader(order, color),
               const SizedBox(height: 20),
-              const Text('Informasi Pesanan',
-                  style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF3E2723))),
+              const Text('Informasi Pesanan', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
               const SizedBox(height: 12),
               _buildInfoCard([
                 _infoRow('ID Pesanan', '#${order.id.substring(0, 8)}'),
@@ -46,11 +44,7 @@ class OrderDetailView extends GetView<OrdersController> {
                 _infoRow('Total', 'Rp ${order.totalAmount.toInt()}'),
               ]),
               const SizedBox(height: 20),
-              const Text('Data Pemesan',
-                  style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF3E2723))),
+              const Text('Data Pemesan', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
               const SizedBox(height: 12),
               _buildInfoCard([
                 _infoRow('Nama', order.customerName),
@@ -59,43 +53,22 @@ class OrderDetailView extends GetView<OrdersController> {
                 _infoRow('GPS', '${order.latitude}, ${order.longitude}'),
               ]),
               const SizedBox(height: 20),
-              const Text('Item Pesanan',
-                  style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF3E2723))),
+              const Text('Item Pesanan', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
               const SizedBox(height: 12),
               Card(
                 margin: EdgeInsets.zero,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16)),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
                 child: Column(
-                  children: order.items.map((item) {
-                    return ListTile(
-                      leading: Container(
-                        width: 40,
-                        height: 40,
-                        decoration: BoxDecoration(
-                          color: const Color(0xFF8B5E3C).withValues(alpha: 0.1),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        child: const Icon(Icons.bakery_dining,
-                            size: 20, color: Color(0xFF8B5E3C)),
-                      ),
-                      title: Text(item.productName,
-                          style: const TextStyle(
-                              fontWeight: FontWeight.w500,
-                              color: Color(0xFF3E2723))),
-                      subtitle: Text('${item.quantity} x Rp ${item.price.toInt()}',
-                          style: TextStyle(color: Colors.grey.shade600)),
-                      trailing: Text(
-                        'Rp ${(item.quantity * item.price).toInt()}',
-                        style: const TextStyle(
-                            fontWeight: FontWeight.w600,
-                            color: Color(0xFF8B5E3C)),
-                      ),
-                    );
-                  }).toList(),
+                  children: order.items.map((item) => ListTile(
+                    leading: Container(
+                      width: 40, height: 40,
+                      decoration: BoxDecoration(color: AppColors.primary.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(12)),
+                      child: const Icon(Icons.bakery_dining, size: 20, color: AppColors.primary),
+                    ),
+                    title: Text(item.productName, style: const TextStyle(fontWeight: FontWeight.w500, color: AppColors.textPrimary)),
+                    subtitle: Text('${item.quantity} x Rp ${item.price.toInt()}', style: const TextStyle(color: AppColors.textSecondary)),
+                    trailing: Text('Rp ${(item.quantity * item.price).toInt()}', style: const TextStyle(fontWeight: FontWeight.w600, color: AppColors.primary)),
+                  )).toList(),
                 ),
               ),
             ],
@@ -105,44 +78,20 @@ class OrderDetailView extends GetView<OrdersController> {
     );
   }
 
-  Color _statusColor(String status) {
-    switch (status) {
-      case 'pending':
-        return const Color(0xFFFF9800);
-      case 'confirmed':
-        return const Color(0xFF2196F3);
-      case 'delivered':
-        return const Color(0xFF43A047);
-      case 'cancelled':
-        return const Color(0xFFE53935);
-      default:
-        return Colors.grey;
-    }
-  }
-
   Widget _buildStatusHeader(dynamic order, Color color) {
     return Card(
       margin: EdgeInsets.zero,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       child: Padding(
         padding: const EdgeInsets.all(20),
         child: Row(
           children: [
             Container(
-              width: 56,
-              height: 56,
-              decoration: BoxDecoration(
-                color: color.withValues(alpha: 0.1),
-                shape: BoxShape.circle,
-              ),
+              width: 56, height: 56,
+              decoration: BoxDecoration(color: color.withValues(alpha: 0.1), shape: BoxShape.circle),
               child: Icon(
-                order.status == 'delivered'
-                    ? Icons.check_circle
-                    : order.status == 'cancelled'
-                        ? Icons.cancel
-                        : Icons.schedule,
-                color: color,
-                size: 28,
+                order.status == 'delivered' ? Icons.check_circle : order.status == 'cancelled' ? Icons.cancel : Icons.schedule,
+                color: color, size: 28,
               ),
             ),
             const SizedBox(width: 16),
@@ -150,27 +99,11 @@ class OrderDetailView extends GetView<OrdersController> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    order.status.toUpperCase(),
-                    style: TextStyle(
-                      color: color,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
-                    ),
-                  ),
+                  Text(order.status.toUpperCase(), style: TextStyle(color: color, fontWeight: FontWeight.bold, fontSize: 16)),
                   const SizedBox(height: 4),
                   Text(
-                    order.status == 'pending'
-                        ? 'Menunggu konfirmasi'
-                        : order.status == 'confirmed'
-                            ? 'Pesanan dikonfirmasi'
-                            : order.status == 'delivered'
-                                ? 'Pesanan telah sampai'
-                                : 'Pesanan dibatalkan',
-                    style: TextStyle(
-                      color: Colors.grey.shade600,
-                      fontSize: 13,
-                    ),
+                    order.status == 'pending' ? 'Menunggu konfirmasi' : order.status == 'confirmed' ? 'Pesanan dikonfirmasi' : order.status == 'delivered' ? 'Pesanan telah sampai' : 'Pesanan dibatalkan',
+                    style: const TextStyle(color: AppColors.textSecondary, fontSize: 13),
                   ),
                 ],
               ),
@@ -184,11 +117,8 @@ class OrderDetailView extends GetView<OrdersController> {
   Widget _buildInfoCard(List<Widget> rows) {
     return Card(
       margin: EdgeInsets.zero,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(children: rows),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+      child: Padding(padding: const EdgeInsets.all(16), child: Column(children: rows)),
     );
   }
 
@@ -198,22 +128,8 @@ class OrderDetailView extends GetView<OrdersController> {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(
-            width: 90,
-            child: Text(
-              label,
-              style: TextStyle(color: Colors.grey.shade600, fontSize: 13),
-            ),
-          ),
-          Expanded(
-            child: Text(
-              value,
-              style: const TextStyle(
-                  color: Color(0xFF3E2723),
-                  fontWeight: FontWeight.w500,
-                  fontSize: 13),
-            ),
-          ),
+          SizedBox(width: 90, child: Text(label, style: const TextStyle(color: AppColors.textSecondary, fontSize: 13))),
+          Expanded(child: Text(value, style: const TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.w500, fontSize: 13))),
         ],
       ),
     );

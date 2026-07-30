@@ -4,7 +4,7 @@ import { AuthRequest } from "../middleware/authMiddleware";
 
 export const createOrder = async (req: AuthRequest, res: Response): Promise<void> => {
   try {
-    const { customerName, customerPhone, customerAddress, latitude, longitude, items } = req.body;
+    const { customerName, customerPhone, customerAddress, latitude, longitude, items, paymentProof } = req.body;
 
     if (!customerName || !customerPhone || !customerAddress) {
       res.status(400).json({ success: false, message: "Please provide all required fields" });
@@ -59,6 +59,7 @@ export const createOrder = async (req: AuthRequest, res: Response): Promise<void
         latitude: latitude !== undefined ? Number(latitude) : 0,
         longitude: longitude !== undefined ? Number(longitude) : 0,
         totalAmount,
+        paymentProof: paymentProof || null,
         items: {
           create: orderItems,
         },
@@ -82,6 +83,7 @@ export const createOrder = async (req: AuthRequest, res: Response): Promise<void
       longitude: order.longitude,
       totalAmount: order.totalAmount,
       status: order.status,
+      paymentProof: order.paymentProof,
       createdAt: order.createdAt.toISOString(),
       items: order.items.map((item) => ({
         id: item.id,
@@ -123,6 +125,7 @@ export const getOrders = async (req: AuthRequest, res: Response): Promise<void> 
       longitude: order.longitude,
       totalAmount: order.totalAmount,
       status: order.status,
+      paymentProof: order.paymentProof,
       createdAt: order.createdAt.toISOString(),
       items: order.items.map((item) => ({
         id: item.id,
@@ -230,6 +233,7 @@ export const updateOrderStatus = async (req: AuthRequest, res: Response): Promis
       longitude: order.longitude,
       totalAmount: order.totalAmount,
       status: order.status,
+      paymentProof: order.paymentProof,
       createdAt: order.createdAt.toISOString(),
       items: order.items.map((item: any) => ({
         id: item.id,

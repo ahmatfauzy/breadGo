@@ -5,6 +5,7 @@ import '../modules/home/views/home_view.dart';
 import '../modules/auth/bindings/auth_binding.dart';
 import '../modules/auth/views/login_view.dart';
 import '../modules/auth/views/register_view.dart';
+import '../modules/auth/views/verify_view.dart';
 import '../modules/products/bindings/products_binding.dart';
 import '../modules/products/views/products_view.dart';
 import '../modules/products/views/product_detail_view.dart';
@@ -38,6 +39,11 @@ class AppPages {
     GetPage(
       name: _Paths.REGISTER,
       page: () => const RegisterView(),
+      binding: AuthBinding(),
+    ),
+    GetPage(
+      name: _Paths.VERIFY,
+      page: () => const VerifyView(),
       binding: AuthBinding(),
     ),
     GetPage(

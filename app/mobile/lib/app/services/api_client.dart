@@ -124,6 +124,36 @@ class ApiClient {
     return _handleResponse<T>(response, fromJsonT);
   }
 
+  Future<ApiResponse<Map<String, dynamic>>> uploadFile(
+    String path, {
+    required List<int> bytes,
+    required String filename,
+    String fieldName = 'image',
+    bool auth = false,
+  }) async {
+    final request = http.MultipartRequest(
+      'POST',
+      Uri.parse('$baseUrl$path'),
+    );
+    if (auth && _token != null) {
+      request.headers['Authorization'] = 'Bearer $_token';
+    }
+    request.files.add(http.MultipartFile.fromBytes(
+      fieldName,
+      bytes,
+      filename: filename,
+    ));
+    final streamed = await request.send();
+    final response = await http.Response.fromStream(streamed);
+    final body = jsonDecode(response.body) as Map<String, dynamic>;
+    final success = body['success'] as bool? ?? false;
+    return ApiResponse(
+      success: success,
+      data: body['data'] as Map<String, dynamic>?,
+      message: body['message'] as String?,
+    );
+  }
+
   ApiResponse<T> _handleResponse<T>(
     http.Response response,
     T Function(dynamic)? fromJsonT,
@@ -133,7 +163,12 @@ class ApiClient {
     final message = body['message'] as String?;
 
     if (!success) {
-      return ApiResponse(success: false, message: message);
+      return ApiResponse(
+        success: false,
+        message: message,
+        needsVerification: body['needsVerification'] as bool?,
+        email: body['email'] as String?,
+      );
     }
 
     return ApiResponse<T>.fromJson(body, fromJsonT);

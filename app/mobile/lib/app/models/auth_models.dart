@@ -49,6 +49,28 @@ class AuthData {
       );
 }
 
+class VerifyEmailRequest {
+  final String email;
+  final String code;
+
+  VerifyEmailRequest({required this.email, required this.code});
+
+  Map<String, dynamic> toJson() => {
+        'email': email,
+        'code': code,
+      };
+}
+
+class ResendCodeRequest {
+  final String email;
+
+  ResendCodeRequest({required this.email});
+
+  Map<String, dynamic> toJson() => {
+        'email': email,
+      };
+}
+
 class UserProfile {
   final String id;
   final String name;

@@ -7,13 +7,16 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(uuid())
-  name      String
-  email     String   @unique
-  password  String
-  role      String   @default("customer")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id               String   @id @default(uuid())
+  name             String
+  email            String   @unique
+  password         String
+  role             String   @default("customer")
+  isVerified               Boolean   @default(false)
+  verificationCode         String?
+  verificationCodeCreatedAt DateTime?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 
   orders Order[]
 }
@@ -42,6 +45,7 @@ model Order {
   longitude       Float
   totalAmount     Float
   status          String   @default("pending")
+  paymentProof    String?
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
 

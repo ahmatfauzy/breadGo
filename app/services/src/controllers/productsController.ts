@@ -110,9 +110,8 @@ export const deleteProduct = async (req: Request, res: Response): Promise<void> 
       return;
     }
 
-    await prisma.product.update({
+    await prisma.product.delete({
       where: { id },
-      data: { isActive: false },
     });
 
     res.status(200).json({ success: true, message: "Product deleted" });
