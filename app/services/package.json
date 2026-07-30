@@ -4,7 +4,7 @@
   "description": "API Services for BreadGo",
   "main": "dist/server.js",
   "scripts": {
-    "postinstall": "prisma generate",
+    "vercel-build": "prisma generate && tsc",
     "build": "tsc",
     "start": "node dist/server.js",
     "dev": "tsx watch src/server.ts",
