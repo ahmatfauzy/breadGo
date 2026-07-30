@@ -153,20 +153,23 @@ class AppBottomNav extends StatelessWidget {
 
   Widget _sheetItem(IconData icon, String title, VoidCallback onTap, {Color? color}) {
     final c = color ?? AppColors.textPrimary;
-    return ListTile(
-      leading: Container(
-        width: 40,
-        height: 40,
-        decoration: BoxDecoration(
-          color: (color ?? AppColors.primary).withValues(alpha: 0.1),
-          borderRadius: BorderRadius.circular(12),
+    return Material(
+      color: Colors.transparent,
+      child: ListTile(
+        leading: Container(
+          width: 40,
+          height: 40,
+          decoration: BoxDecoration(
+            color: (color ?? AppColors.primary).withValues(alpha: 0.1),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: Icon(icon, color: c, size: 20),
         ),
-        child: Icon(icon, color: c, size: 20),
+        title: Text(title, style: TextStyle(color: c, fontSize: 15, fontWeight: FontWeight.w600)),
+        onTap: onTap,
+        horizontalTitleGap: 16,
+        contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 2),
       ),
-      title: Text(title, style: TextStyle(color: c, fontSize: 15, fontWeight: FontWeight.w600)),
-      onTap: onTap,
-      horizontalTitleGap: 16,
-      contentPadding: const EdgeInsets.symmetric(horizontal: 24, vertical: 2),
     );
   }
 }

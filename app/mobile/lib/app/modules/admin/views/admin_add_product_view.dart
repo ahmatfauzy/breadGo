@@ -219,7 +219,7 @@ class _AdminAddProductViewState extends State<AdminAddProductView> {
                       Get.find<ProductsController>().fetchProducts();
                     }
                     Get.find<AdminController>().fetchProducts();
-                    Get.offAllNamed('/admin/dashboard');
+                    Get.offAllNamed('/admin/dashboard', arguments: {'tab': 1});
                   }
                 },
                 child: Text(_isEditMode ? 'SIMPAN PERUBAHAN' : 'SIMPAN PRODUK',

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../controllers/admin_controller.dart';
 import '../../../theme/app_theme.dart';
 import '../../../utils/helpers.dart';
+import '../../../services/api_client.dart';
 
 class AdminOrderDetailView extends GetView<AdminController> {
   const AdminOrderDetailView({super.key});
@@ -57,7 +59,12 @@ class AdminOrderDetailView extends GetView<AdminController> {
                 _infoRow('Nama', order.customerName),
                 _infoRow('Telepon', order.customerPhone),
                 _infoRow('Alamat', order.customerAddress),
-                _infoRow('GPS', '${order.latitude}, ${order.longitude}'),
+                _infoRow('GPS', '${order.latitude}, ${order.longitude}', onTap: () async {
+                  final url = Uri.parse('https://www.google.com/maps/search/?api=1&query=${order.latitude},${order.longitude}');
+                  if (await canLaunchUrl(url)) {
+                    await launchUrl(url, mode: LaunchMode.externalApplication);
+                  }
+                }),
               ]),
               const SizedBox(height: 20),
               const Text('Bukti Pembayaran', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
@@ -70,6 +77,7 @@ class AdminOrderDetailView extends GetView<AdminController> {
                         borderRadius: BorderRadius.circular(20),
                         child: Image.network(
                           order.paymentProof!,
+                          headers: ApiClient().token != null ? {'Authorization': 'Bearer ${ApiClient().token}'} : null,
                           fit: BoxFit.contain,
                           width: double.infinity,
                           height: 250,
@@ -207,8 +215,8 @@ class AdminOrderDetailView extends GetView<AdminController> {
     );
   }
 
-  Widget _infoRow(String label, String value) {
-    return Padding(
+  Widget _infoRow(String label, String value, {VoidCallback? onTap}) {
+    final row = Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -218,5 +226,9 @@ class AdminOrderDetailView extends GetView<AdminController> {
         ],
       ),
     );
+    if (onTap != null) {
+      return GestureDetector(onTap: onTap, child: row);
+    }
+    return row;
   }
 }

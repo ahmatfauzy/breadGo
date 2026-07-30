@@ -12,9 +12,9 @@ class ApiClient {
     const envUrl = String.fromEnvironment('API_BASE_URL');
     if (envUrl.isNotEmpty) return envUrl;
     if (!kIsWeb && Platform.isAndroid) {
-      return 'http://10.0.2.2:5000/api/v1';
+      return 'https://bread-go.vercel.app/api/v1';
     }
-    return 'http://localhost:5000/api/v1';
+    return 'https://bread-go.vercel.app/api/v1';
   }
 
   static final ApiClient _instance = ApiClient._();
@@ -66,7 +66,7 @@ class ApiClient {
     if (queryParams != null && queryParams.isNotEmpty) {
       uri = uri.replace(queryParameters: queryParams);
     }
-    final response = await http.get(uri, headers: _headers(auth: auth));
+    final response = await http.get(uri, headers: _headers(auth: auth)).timeout(const Duration(seconds: 15));
     return _handleResponse<T>(response, fromJsonT);
   }
 
@@ -80,7 +80,7 @@ class ApiClient {
       Uri.parse('$baseUrl$path'),
       headers: _headers(auth: auth),
       body: body != null ? jsonEncode(body) : null,
-    );
+    ).timeout(const Duration(seconds: 15));
     return _handleResponse<T>(response, fromJsonT);
   }
 
@@ -94,7 +94,7 @@ class ApiClient {
       Uri.parse('$baseUrl$path'),
       headers: _headers(auth: auth),
       body: body != null ? jsonEncode(body) : null,
-    );
+    ).timeout(const Duration(seconds: 15));
     return _handleResponse<T>(response, fromJsonT);
   }
 
@@ -108,7 +108,7 @@ class ApiClient {
       Uri.parse('$baseUrl$path'),
       headers: _headers(auth: auth),
       body: body != null ? jsonEncode(body) : null,
-    );
+    ).timeout(const Duration(seconds: 15));
     return _handleResponse<T>(response, fromJsonT);
   }
 
@@ -120,7 +120,7 @@ class ApiClient {
     final response = await http.delete(
       Uri.parse('$baseUrl$path'),
       headers: _headers(auth: auth),
-    );
+    ).timeout(const Duration(seconds: 15));
     return _handleResponse<T>(response, fromJsonT);
   }
 
@@ -143,7 +143,7 @@ class ApiClient {
       bytes,
       filename: filename,
     ));
-    final streamed = await request.send();
+    final streamed = await request.send().timeout(const Duration(seconds: 30));
     final response = await http.Response.fromStream(streamed);
     final body = jsonDecode(response.body) as Map<String, dynamic>;
     final success = body['success'] as bool? ?? false;

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../theme/app_theme.dart';
 import '../../../utils/helpers.dart';
@@ -50,7 +51,12 @@ class OrderDetailView extends GetView<OrdersController> {
                 _infoRow('Nama', order.customerName),
                 _infoRow('Telepon', order.customerPhone),
                 _infoRow('Alamat', order.customerAddress),
-                _infoRow('GPS', '${order.latitude}, ${order.longitude}'),
+                _infoRow('GPS', '${order.latitude}, ${order.longitude}', onTap: () async {
+                  final url = Uri.parse('https://www.google.com/maps/search/?api=1&query=${order.latitude},${order.longitude}');
+                  if (await canLaunchUrl(url)) {
+                    await launchUrl(url, mode: LaunchMode.externalApplication);
+                  }
+                }),
               ]),
               const SizedBox(height: 20),
               const Text('Item Pesanan', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
@@ -122,8 +128,8 @@ class OrderDetailView extends GetView<OrdersController> {
     );
   }
 
-  Widget _infoRow(String label, String value) {
-    return Padding(
+  Widget _infoRow(String label, String value, {VoidCallback? onTap}) {
+    final row = Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -133,5 +139,9 @@ class OrderDetailView extends GetView<OrdersController> {
         ],
       ),
     );
+    if (onTap != null) {
+      return GestureDetector(onTap: onTap, child: row);
+    }
+    return row;
   }
 }

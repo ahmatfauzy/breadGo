@@ -20,6 +20,10 @@ class AdminController extends GetxController {
     super.onInit();
     fetchOrders();
     fetchProducts();
+    final args = Get.arguments;
+    if (args is Map<String, dynamic> && args.containsKey('tab')) {
+      selectedTab.value = args['tab'] as int;
+    }
   }
 
   void switchTab(int index) {
@@ -111,15 +115,20 @@ class AdminController extends GetxController {
   }
 
   Future<void> fetchProducts() async {
-    final res = await _api.get(
-      '/admin/products',
-      auth: true,
-      fromJsonT: (json) => (json as List)
-          .map((e) => Product.fromJson(e as Map<String, dynamic>))
-          .toList(),
-    );
-    if (res.success && res.data != null) {
-      products.value = res.data!;
+    isLoading.value = true;
+    try {
+      final res = await _api.get(
+        '/admin/products',
+        auth: true,
+        fromJsonT: (json) => (json as List)
+            .map((e) => Product.fromJson(e as Map<String, dynamic>))
+            .toList(),
+      );
+      if (res.success && res.data != null) {
+        products.value = res.data!;
+      }
+    } finally {
+      isLoading.value = false;
     }
   }
 

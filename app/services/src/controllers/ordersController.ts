@@ -177,6 +177,7 @@ export const getOrderById = async (req: AuthRequest, res: Response): Promise<voi
       longitude: order.longitude,
       totalAmount: order.totalAmount,
       status: order.status,
+      paymentProof: order.paymentProof,
       createdAt: order.createdAt.toISOString(),
       items: order.items.map((item: any) => ({
         id: item.id,

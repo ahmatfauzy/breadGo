@@ -55,12 +55,14 @@ async function migrate() {
         "longitude" REAL NOT NULL,
         "totalAmount" REAL NOT NULL,
         "status" TEXT NOT NULL DEFAULT 'pending',
+        "paymentProof" TEXT,
         "createdAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
         "updatedAt" DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY ("userId") REFERENCES "User"("id")
       );
     `);
     console.log("  Order table OK");
+    try { await client.execute(`ALTER TABLE "Order" ADD COLUMN "paymentProof" TEXT;`); } catch (e) { /* column may already exist */ }
 
     await client.execute(`
       CREATE TABLE IF NOT EXISTS "OrderItem" (
